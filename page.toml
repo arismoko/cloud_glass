@@ -14,3 +14,7 @@ What it does:
 - The original's recipes, self drops, creative tab and English, Portuguese and Turkish translations.
 """
 categories = ["decoration"]
+
+[[screenshots]]
+path = "page/blocks.png"
+caption = "An arch of cloud glass in every dye colour."
