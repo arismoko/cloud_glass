@@ -1,85 +1,34 @@
-# Cloud Glass
+# Cloud Glass for Sunrise
 
-A Horizon port of [Cloud Glass 1.1.0](https://github.com/Mrbysco/CloudGlass)
-(MIT, by Mrbysco) for Minecraft Java 26.3: **sixteen semi-transparent,
-no-collision decorative glass blocks**, one per vanilla dye colour
-(`cloudglass:<colour>_cloud_glass`).
+Sixteen see-through, walk-through cloud glass blocks, one per dye colour.
 
-This is one flat SDK package (mod API `0.2`): the blocks are content in
-`assets/` and `data/`, and `src/` carries the port's colour-registry model plus
-the mod's one code behaviour, the client eye tint: while the block containing
-the player's eye is a Cloud Glass block, the frame is filled with that dye's
-diffuse colour at alpha `0x80`, as upstream's `ClientTick` layer does. The
-package registers nothing from Rust.
+A port of [Cloud Glass](https://github.com/Mrbysco/CloudGlass) by Mrbysco to [Sunrise](https://playsunrise.net) (Minecraft Java 26.3). The blocks are content; the beacon tint, the refusal of liquids and the screen tint are a small native part.
 
-## Build and check
+## What it does
 
-```bash
-cd ports/cloudglass
-CARGO_INCREMENTAL=0 cargo test                       # the carried runtime tests
-CARGO_INCREMENTAL=0 cargo clippy --all-targets -- -D warnings
-rm -f Cargo.lock                                     # never pack a resolved lock
-CARGO_INCREMENTAL=0 cargo horizon-mod build          # -> target/horizon-mod/cloudglass.hmod
-cp target/horizon-mod/cloudglass.hmod ./
-cargo horizon-mod check cloudglass.hmod
-cargo horizon-mod fits cloudglass.hmod --build nightly
+- Sixteen cloud glass blocks, one per dye colour, with the glass sound, strength and translucent look of stained glass, but no collision: players, mobs and items pass through them, and they block no view and suffocate nobody.
+- Standing with your eyes inside a cloud glass block tints the screen with its colour.
+- A beacon beam passing through cloud glass takes its colour, as through stained glass.
+- Water and lava neither flow into cloud glass nor wash it away, and a bucket can't fill it.
+- Mobs don't spawn on it, and it doesn't conduct redstone.
+- The original's recipes (four wool around a glass block makes four, and eight white cloud glass around a dye makes eight of that colour), self drops, creative tab and English, Portuguese and Turkish translations.
+
+## Differences from the original
+
+- None that a player can see.
+
+## Building
+
+With the Sunrise mod tool (`cargo sunrise-mod`, from the Sunrise SDK) and Rust:
+
+```sh
+cargo sunrise-mod build    # compiles against the pinned game, packs target/sunrise-mod/cloudglass.smod
+cargo sunrise-mod run      # builds it and starts the game with it
+cargo test
 ```
 
-`cargo horizon-mod` fetches the pinned SDK into `.horizon/sdk/` on first use
-(gitignored; the build never packs it). The package is built and checked by the
-pin's own tool, which is the same code the registry runs; `check` validates the
-manifest and the layout, not the recipes or the loot — the in-game e2e does.
-
-## In-game proof
-
-```bash
-ports/tools/launcher-game.sh run cloudglass          # builds the game, runs tools/e2e.sh
-```
-
-The launcher builds a game at the package's pin carrying it, and the e2e proves
-in game: all 16 states bind (and stay unchanged when a neighbour is added and
-removed), all 16 items give and place, the creative tab lists them, all 16 loot
-tables drop exactly one of themselves, **all 31 carried recipes** craft their
-declared output and consume their ingredients, both `c:` tag families resolve,
-and walking through cloud glass equals walking through air while vanilla glass
-stops the player and cobweb slows them. A control run of the same Nightly
-without the package fails at the first assertion. The client eye tint is
-measured as a screenshot differential: cloud glass at the eye moves the frame,
-vanilla glass at the eye and a cloud glass block at the feet alone do not, and
-`TINT_SELFTEST=1` inverts the feet claim so the assertion is proven
-fail-capable.
-
-## Contents
-
-| Path | Files | What |
-|---|---:|---|
-| `horizon-mod.toml` | 1 | the only manifest: `cloudglass` 0.2.2, API 0.2, `[native]` pin |
-| `Cargo.toml`, `src/lib.rs`, `src/support.rs` | 3 | one crate; the `impl Hooks` answering `gui_layer_pre`, and its glue |
-| `src/runtime.rs` | 1 | the carried pure colour registry, the overlay ARGB and the eye-block rule, 10 tests |
-| `assets/cloudglass/blockstates/` | 16 | single-variant cube blockstates |
-| `assets/cloudglass/models/block/` | 16 | `cube_all`, `force_translucent` |
-| `assets/cloudglass/items/` | 16 | 26.3 item model definitions |
-| `assets/cloudglass/textures/block/` | 16 | upstream PNGs, byte for byte |
-| `assets/cloudglass/lang/` | 3 | `en_us`, `pt_br`, `tr_tr` |
-| `data/cloudglass/horizon/block/` | 16 | template `minecraft:cobweb` + properties |
-| `data/cloudglass/horizon/creative_tab/` | 1 | the `Cloud Glass` tab, 16 items |
-| `data/cloudglass/loot_table/blocks/` | 16 | `dropSelf` with `survives_explosion` |
-| `data/cloudglass/recipe/` | 31 | 16 wool + glass, 15 white + dye |
-| `data/cloudglass/license/` | 2 | the MIT text and the provenance notice |
-| `data/c/tags/` | 23 | `c:dyes/*`, `c:dyes`, `c:glass_blocks*` |
-| `tools/` | 4 | `gen_content.py`, `craft_check.py`, `e2e.sh`, `stamp_license.py` |
-
-Everything under `assets/` and `data/` is generated by
-[`tools/gen_content.py`](tools/gen_content.py) from the upstream checkout at
-`ports/_shared/upstream/cloudglass` (Cloud Glass 1.1.0, MIT). The textures are
-copied byte for byte; the data files are rewritten to the 26.3 formats the
-pinned loader reads (see [`notes.md`](notes.md) §"Content adaptations to
-26.3"). The upstream checkout is not kept in this tree, so a regeneration needs
-it cloned again first.
+`tools/gen_content.py --upstream <CloudGlass checkout>` regenerates the content from the original's source.
 
 ## Licence
 
-MIT — `Copyright (c) 2024 Mrbysco`. The text and the provenance notice travel
-inside the package (`LICENSE`, `LICENSE-NOTICE.md`, and the two copies under
-`data/cloudglass/license/`). Local-only until the maintainer approves
-publishing (ARCHITECTURE.md §8).
+MIT, as the original. See [LICENSE](LICENSE) and [LICENSE-NOTICE.md](LICENSE-NOTICE.md).

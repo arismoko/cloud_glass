@@ -1,18 +1,14 @@
 [package]
 name = "mod-cloudglass"
-version = "0.2.2"
+version = "1.1.0"
 edition = "2024"
 license = "MIT"
-description = "Cloud Glass for Horizon: sixteen semi-transparent, no-collision decorative blocks"
-# Ported from: Cloud Glass 1.1.0 (Mrbysco/CloudGlass, MIT per LICENSE and
-# META-INF/neoforge.mods.toml), Minecraft Java 1.21.1 NeoForge.
-# The textures, models and lang are the upstream mod's own MIT assets; the
-# runtime model is a clean-room Rust rewrite (see LICENSE and notes.md).
-# LOCAL-ONLY until the licence allows derivatives and the maintainer approves
-# publishing (ARCHITECTURE.md §8).
+description = "Cloud Glass for Sunrise: sixteen see-through, walk-through cloud glass blocks"
+# Ported from: Cloud Glass 1.1.0 (Mrbysco/CloudGlass, MIT), Minecraft Java 1.21.1 NeoForge.
+# The textures, models and lang are the upstream mod's own MIT files; tools/gen_content.py
+# writes the rest of the content from the upstream checkout.
 publish = false
 
 [dependencies]
-# The pinned SDK's API crate, fetched into .horizon/sdk/ by any `cargo horizon-mod` command.
-# No other dependency: this package's only code is the test-only registry model.
-horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
+# The pinned SDK's API crate, fetched into .sunrise/sdk/ by any `cargo sunrise-mod` command.
+sunrise-mod-api = { path = ".sunrise/sdk/api/crates/sunrise-mod-api" }

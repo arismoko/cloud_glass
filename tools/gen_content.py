@@ -10,15 +10,13 @@ two shaped recipes (`CloudRecipeProvider.java:32-78`) and one creative tab
 
 Textures, models and lang are copied from the upstream repository (MIT); the
 models' sprite references gain 26.3's `force_translucent`. Data files are
-rewritten into the 26.3 formats the pinned Horizon loader reads; every rewrite
-is noted in ../notes.md.
+rewritten into the 26.3 formats Sunrise reads.
 
 Usage:
-    python3 tools/gen_content.py --upstream ../_shared/upstream/cloudglass
+    python3 tools/gen_content.py --upstream <CloudGlass checkout>
 
 The output is the flat SDK package's own content tree: `assets/` and `data/` at the port
-root, beside `horizon-mod.toml` (which is hand-written: the manifest also carries the
-`[native]` pin, which this generator does not own).
+root, beside the hand-written `sunrise-mod.toml`.
 """
 
 from __future__ import annotations
@@ -49,12 +47,12 @@ COLOURS = [
     ("black", 29),  # MapColor.COLOR_BLACK
 ]
 
-# The vanilla block whose data the declarations copy. It is the only 26.3
-# block with a single state, an empty collision table, can_occlude=false, a
-# MODEL render shape and an item. Its WebBlock behaviour is keyed on the
-# literal block name "minecraft:cobweb", so a cloudglass:* block does not
-# slow entities (see ../notes.md).
-TEMPLATE = "minecraft:cobweb"
+# Each colour's declaration copies the vanilla stained glass of its dye: a
+# TransparentBlock with upstream's strength 0.3, glass sound, hat instrument,
+# dye map colour, no occlusion, no spawning, no redstone conduction, no
+# suffocation and no view blocking (CloudRegistry.java:31-45). The one
+# property stained glass lacks, noCollission, is the empty collision table.
+TEMPLATE = "minecraft:{colour}_stained_glass"
 
 
 def write(path: Path, value) -> None:
@@ -101,7 +99,7 @@ def main() -> None:
         "--upstream",
         type=Path,
         default=Path(__file__).resolve().parents[2]
-        / "_shared/upstream/cloudglass",
+        / "upstream/CloudGlass",
     )
     parser.add_argument(
         "--out", type=Path, default=Path(__file__).resolve().parents[1]
@@ -166,21 +164,22 @@ def main() -> None:
             {"model": {"type": "minecraft:model", "model": f"cloudglass:block/{block}"}},
         )
 
-        # Block declaration: the template's empty collision and translucency,
-        # upstream's hardness/strength 0.3, glass sound and dye map colour
-        # (CloudRegistry.java:31-45).
+        # Block declaration: the dye's stained glass with no collision, and
+        # upstream's properties spelled out (CloudRegistry.java:31-45).
         write(
-            data / f"cloudglass/horizon/block/{block}.json",
+            data / f"cloudglass/sunrise/block/{block}.json",
             {
-                "template": TEMPLATE,
+                "template": TEMPLATE.format(colour=name),
+                "collision_shapes": {"default": []},
                 "properties": {
                     "hardness": 0.3,
                     "explosion_resistance": 0.3,
                     "map_color": map_color,
                     "requires_tool": False,
                     "sounds": "minecraft:glass",
+                    "instrument": "HAT",
+                    "occludes": False,
                 },
-                "item": True,
             },
         )
 
@@ -235,9 +234,9 @@ def main() -> None:
             {"values": ["#c:glass_blocks/colorless", "#c:glass_blocks/tinted"]},
         )
 
-    # One creative tab for the content (Horizon has no vanilla-tab insertion).
+    # One creative tab for the content, as upstream's `cloudglass:tab`.
     write(
-        data / "cloudglass/horizon/creative_tab/cloudglass.json",
+        data / "cloudglass/sunrise/creative_tab/cloudglass.json",
         {
             "title": "Cloud Glass",
             "icon": "cloudglass:light_blue_cloud_glass",

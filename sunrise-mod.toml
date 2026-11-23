@@ -1,0 +1,14 @@
+# Cloud Glass for Sunrise: content in data/ and assets/, with a small native part in src/.
+id = "cloudglass"
+name = "Cloud Glass"
+version = "1.1.0"
+description = "Sixteen see-through, walk-through cloud glass blocks, one per dye colour."
+authors = ["Mrbysco", "arismoko"]
+license = "MIT"
+credits = "Ported to Minecraft 26.3 by AdLf0208, and to Sunrise by arismoko."
+homepage = "https://github.com/arismoko/cloud_glass"
+side = "both"
+
+[native]
+game = "26.3"
+sunrise = "7cfdf81463ebb4a19705768273909f7f3f03601d"

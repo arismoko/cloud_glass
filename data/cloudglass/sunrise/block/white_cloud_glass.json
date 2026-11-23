@@ -1,0 +1,15 @@
+{
+  "template": "minecraft:white_stained_glass",
+  "collision_shapes": {
+    "default": []
+  },
+  "properties": {
+    "hardness": 0.3,
+    "explosion_resistance": 0.3,
+    "map_color": 8,
+    "requires_tool": false,
+    "sounds": "minecraft:glass",
+    "instrument": "HAT",
+    "occludes": false
+  }
+}
