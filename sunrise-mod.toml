@@ -1,7 +1,7 @@
 # Cloud Glass for Sunrise: content in data/ and assets/, with a small native part in src/.
 id = "cloudglass"
 name = "Cloud Glass"
-version = "1.1.1"
+version = "1.1.2"
 description = "Sixteen see-through, walk-through cloud glass blocks, one per dye colour."
 authors = ["Mrbysco", "arismoko"]
 license = "MIT"
